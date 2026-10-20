@@ -1,0 +1,294 @@
+<!-- Header / Navbar -->
+<header class="bg-slate-800 border-b border-slate-700 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+            <div class="bg-indigo-600 text-white p-2 rounded-lg shadow-lg">
+                <i class="fa-solid fa-diagram-project text-xl"></i>
+            </div>
+            <div>
+                <h1 class="text-xl font-bold text-white tracking-wide">DevFlow</h1>
+                <p class="text-xs text-slate-400">Gestor de Proyectos, Tareas e Incidentes IT</p>
+            </div>
+        </div>
+        <div class="flex items-center space-x-4">
+            <a href="/docs" target="_blank" class="bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs px-3 py-2 rounded-md font-medium transition flex items-center gap-2">
+                <i class="fa-solid fa-code"></i> Swagger API
+            </a>
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                <span class="w-2 h-2 mr-1.5 bg-emerald-400 rounded-full animate-pulse"></span>
+                API Online
+            </span>
+        </div>
+    </div>
+</header>
+
+<!-- Main Content -->
+<main class="flex-1 max-w-7xl w-full mx-auto px-4 py-8">
+
+    <!-- Tabs Navigation -->
+    <div class="flex border-b border-slate-700 mb-8 space-x-4">
+        <button onclick="switchTab('projects')" id="tab-projects" class="tab-btn px-4 py-3 font-medium text-sm flex items-center gap-2 border-b-2 border-indigo-500 text-indigo-400">
+            <i class="fa-solid fa-folder"></i> Proyectos
+        </button>
+        <button onclick="switchTab('tasks')" id="tab-tasks" class="tab-btn px-4 py-3 font-medium text-sm flex items-center gap-2 border-b-2 border-transparent text-slate-400 hover:text-slate-200">
+            <i class="fa-solid fa-list-check"></i> Tareas
+        </button>
+        <button onclick="switchTab('incidents')" id="tab-incidents" class="tab-btn px-4 py-3 font-medium text-sm flex items-center gap-2 border-b-2 border-transparent text-slate-400 hover:text-slate-200">
+            <i class="fa-solid fa-triangle-exclamation"></i> Incidentes IT
+        </button>
+    </div>
+
+    <!-- Seccion Proyectos -->
+    <section id="sec-projects" class="tab-content">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-lg font-semibold text-slate-200">Proyectos Activos</h2>
+            <button onclick="openModal('project')" class="bg-indigo-600 hover:bg-indigo-500 text-white text-sm px-4 py-2 rounded-lg font-medium transition flex items-center gap-2">
+                <i class="fa-solid fa-plus"></i> Nuevo Proyecto
+            </button>
+        </div>
+        <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Se cargan dinámicamente -->
+        </div>
+    </section>
+
+    <!-- Seccion Tareas -->
+    <section id="sec-tasks" class="tab-content hidden">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-lg font-semibold text-slate-200">Tareas del Equipo</h2>
+            <button onclick="openModal('task')" class="bg-indigo-600 hover:bg-indigo-500 text-white text-sm px-4 py-2 rounded-lg font-medium transition flex items-center gap-2">
+                <i class="fa-solid fa-plus"></i> Nueva Tarea
+            </button>
+        </div>
+        <div id="tasks-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Se cargan dinámicamente -->
+        </div>
+    </section>
+
+    <!-- Seccion Incidentes -->
+    <section id="sec-incidents" class="tab-content hidden">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-lg font-semibold text-slate-200">Incidentes Técnicos</h2>
+            <button onclick="openModal('incident')" class="bg-rose-600 hover:bg-rose-500 text-white text-sm px-4 py-2 rounded-lg font-medium transition flex items-center gap-2">
+                <i class="fa-solid fa-plus"></i> Reportar Incidente
+            </button>
+        </div>
+        <div id="incidents-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Se cargan dinámicamente -->
+        </div>
+    </section>
+</main>
+
+<!-- Modal Form (Crear / Editar) -->
+<div id="modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex justify-center items-center hidden">
+    <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 max-w-md w-full shadow-2xl">
+        <div class="flex justify-between items-center mb-4">
+            <h3 id="modal-title" class="text-lg font-bold text-white">Nuevo Registro</h3>
+            <button onclick="closeModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+        </div>
+        <form id="modal-form" onsubmit="handleFormSubmit(event)" class="space-y-4">
+            <input type="hidden" id="form-type">
+
+            <div>
+                <label id="label-title" class="block text-xs font-semibold text-slate-400 uppercase mb-1">Nombre / Título</label>
+                <input type="text" id="input-title" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-indigo-500">
+            </div>
+
+            <div>
+                <label id="label-desc" class="block text-xs font-semibold text-slate-400 uppercase mb-1">Descripción / Asignado</label>
+                <input type="text" id="input-desc" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-indigo-500">
+            </div>
+
+            <div id="field-project-id">
+                <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Proyecto ID</label>
+                <input type="number" id="input-project-id" value="1" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-indigo-500">
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Estado / Severidad</label>
+                <select id="input-status" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-indigo-500">
+                    <option value="active">Activo</option>
+                    <option value="planning">Planificación</option>
+                    <option value="completed">Completado</option>
+                    <option value="todo">Por hacer (Todo)</option>
+                    <option value="in_progress">En progreso</option>
+                    <option value="open">Abierto (Open)</option>
+                    <option value="high">Alta (High)</option>
+                    <option value="critical">Crítico (Critical)</option>
+                </select>
+            </div>
+
+            <div class="flex justify-end space-x-3 pt-4 border-t border-slate-700">
+                <button type="button" onclick="closeModal()" class="px-4 py-2 text-sm text-slate-400 hover:text-white">Cancelar</button>
+                <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white text-sm px-4 py-2 rounded-lg font-medium transition">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Script de Integración con FastAPI -->
+<script>
+    const API_BASE = "";
+
+    // Pestañas
+    function switchTab(tab) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+        document.querySelectorAll('.tab-btn').forEach(el => {
+            el.classList.remove('border-indigo-500', 'text-indigo-400');
+            el.classList.add('border-transparent', 'text-slate-400');
+        });
+
+        document.getElementById(`sec-${tab}`).classList.remove('hidden');
+        const activeBtn = document.getElementById(`tab-${tab}`);
+        activeBtn.classList.remove('border-transparent', 'text-slate-400');
+        activeBtn.classList.add('border-indigo-500', 'text-indigo-400');
+
+        if (tab === 'projects') loadProjects();
+        if (tab === 'tasks') loadTasks();
+        if (tab === 'incidents') loadIncidents();
+    }
+
+    // Cargar Proyectos
+    async function loadProjects() {
+        const res = await fetch(`${API_BASE}/projects`);
+        const data = await res.json();
+        const grid = document.getElementById('projects-grid');
+        grid.innerHTML = data.map(p => `
+            <div class="bg-slate-800 border border-slate-700 rounded-xl p-5 shadow-lg flex flex-col justify-between">
+                <div>
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="font-bold text-slate-100">${p.name}</h3>
+                        <span class="text-xs px-2 py-1 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">${p.status}</span>
+                    </div>
+                    <p class="text-xs text-slate-400 mb-4">${p.description}</p>
+                </div>
+                <div class="flex justify-end space-x-2 pt-3 border-t border-slate-700/50">
+                    <button onclick="deleteItem('projects', ${p.id})" class="text-xs text-rose-400 hover:text-rose-300 p-1"><i class="fa-solid fa-trash"></i> Eliminar</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Cargar Tareas
+    async function loadTasks() {
+        const res = await fetch(`${API_BASE}/tasks`);
+        const data = await res.json();
+        const grid = document.getElementById('tasks-grid');
+        grid.innerHTML = data.map(t => `
+            <div class="bg-slate-800 border border-slate-700 rounded-xl p-5 shadow-lg flex flex-col justify-between">
+                <div>
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="font-bold text-slate-100">${t.title}</h3>
+                        <span class="text-xs px-2 py-1 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">${t.status}</span>
+                    </div>
+                    <p class="text-xs text-slate-400 mb-2"><i class="fa-solid fa-folder text-indigo-400"></i> Proyecto ID: ${t.project_id}</p>
+                    <p class="text-xs text-slate-400 mb-4"><i class="fa-solid fa-user text-slate-500"></i> ${t.assigned_to}</p>
+                </div>
+                <div class="flex justify-end space-x-2 pt-3 border-t border-slate-700/50">
+                    <button onclick="deleteItem('tasks', ${t.id})" class="text-xs text-rose-400 hover:text-rose-300 p-1"><i class="fa-solid fa-trash"></i> Eliminar</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Cargar Incidentes
+    async function loadIncidents() {
+        const res = await fetch(`${API_BASE}/incidents`);
+        const data = await res.json();
+        const grid = document.getElementById('incidents-grid');
+        grid.innerHTML = data.map(i => `
+            <div class="bg-slate-800 border border-slate-700 rounded-xl p-5 shadow-lg flex flex-col justify-between">
+                <div>
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="font-bold text-slate-100">${i.title}</h3>
+                        <span class="text-xs px-2 py-1 rounded bg-rose-500/10 text-rose-400 border border-rose-500/20">${i.severity}</span>
+                    </div>
+                    <p class="text-xs text-slate-400 mb-2"><i class="fa-solid fa-folder text-indigo-400"></i> Proyecto ID: ${i.project_id}</p>
+                    <p class="text-xs text-slate-400 mb-4">Estado: ${i.status}</p>
+                </div>
+                <div class="flex justify-end space-x-2 pt-3 border-t border-slate-700/50">
+                    <button onclick="deleteItem('incidents', ${i.id})" class="text-xs text-rose-400 hover:text-rose-300 p-1"><i class="fa-solid fa-trash"></i> Eliminar</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Eliminar elemento
+    async function deleteItem(type, id) {
+        if (confirm(`¿Eliminar este registro (${id})?`)) {
+            await fetch(`${API_BASE}/${type}/${id}`, { method: 'DELETE' });
+            if (type === 'projects') loadProjects();
+            if (type === 'tasks') loadTasks();
+            if (type === 'incidents') loadIncidents();
+        }
+    }
+
+    // Modal
+    function openModal(type) {
+        document.getElementById('form-type').value = type;
+        const titleLabel = document.getElementById('label-title');
+        const descLabel = document.getElementById('label-desc');
+        const projectField = document.getElementById('field-project-id');
+
+        if (type === 'project') {
+            document.getElementById('modal-title').innerText = 'Nuevo Proyecto';
+            titleLabel.innerText = 'Nombre del Proyecto';
+            descLabel.innerText = 'Descripción';
+            projectField.classList.add('hidden');
+        } else if (type === 'task') {
+            document.getElementById('modal-title').innerText = 'Nueva Tarea';
+            titleLabel.innerText = 'Título de la Tarea';
+            descLabel.innerText = 'Asignado a (Responsable)';
+            projectField.classList.remove('hidden');
+        } else if (type === 'incident') {
+            document.getElementById('modal-title').innerText = 'Reportar Incidente';
+            titleLabel.innerText = 'Título del Incidente';
+            descLabel.innerText = 'Severidad / Detalles';
+            projectField.classList.remove('hidden');
+        }
+
+        document.getElementById('modal-form').reset();
+        document.getElementById('form-type').value = type;
+        document.getElementById('modal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+        document.getElementById('modal').classList.add('hidden');
+    }
+
+    async function handleFormSubmit(e) {
+        e.preventDefault();
+        const type = document.getElementById('form-type').value;
+        const title = document.getElementById('input-title').value;
+        const desc = document.getElementById('input-desc').value;
+        const status = document.getElementById('input-status').value;
+        const projectId = parseInt(document.getElementById('input-project-id').value) || 1;
+
+        let payload = {};
+        let endpoint = "";
+
+        if (type === 'project') {
+            endpoint = "/projects";
+            payload = { name: title, description: desc, status: status };
+        } else if (type === 'task') {
+            endpoint = "/tasks";
+            payload = { project_id: projectId, title: title, assigned_to: desc, status: status };
+        } else if (type === 'incident') {
+            endpoint = "/incidents";
+            payload = { project_id: projectId, title: title, severity: status, status: "open" };
+        }
+
+        await fetch(`${API_BASE}${endpoint}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        closeModal();
+        if (type === 'project') loadProjects();
+        if (type === 'task') loadTasks();
+        if (type === 'incident') loadIncidents();
+    }
+
+    // Inicializar cargando la primera pestaña
+    loadProjects();
+</script>
