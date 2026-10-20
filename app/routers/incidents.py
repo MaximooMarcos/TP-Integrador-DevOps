@@ -1,3 +1,4 @@
+from typing import Optional
 from fastapi import APIRouter, HTTPException, status
 from app.database import incidents_db
 from app.models import Incident
@@ -6,7 +7,9 @@ router = APIRouter(prefix="/incidents", tags=["Incidentes IT"])
 
 
 @router.get("", status_code=status.HTTP_200_OK)
-def get_incidents():
+def get_incidents(project_id: Optional[int] = None):
+    if project_id is not None:
+        return [i for i in incidents_db if i.get("project_id") == project_id]
     return incidents_db
 
 
@@ -28,6 +31,7 @@ def create_incident(incident: Incident):
     incidents_db.append(new_incident)
     return new_incident
 
+
 @router.put("/{incident_id}", status_code=status.HTTP_200_OK)
 def update_incident(incident_id: int, updated_incident: Incident):
     for idx, incident in enumerate(incidents_db):
@@ -39,6 +43,7 @@ def update_incident(incident_id: int, updated_incident: Incident):
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND, detail="Incidente no encontrado"
     )
+
 
 @router.delete("/{incident_id}", status_code=status.HTTP_200_OK)
 def delete_incident(incident_id: int):
