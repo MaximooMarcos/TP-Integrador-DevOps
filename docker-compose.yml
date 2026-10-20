@@ -1,0 +1,9 @@
+services:
+  devflow-api:
+    build: .
+    container_name: devflow_app
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=production
+    restart: unless-stopped
