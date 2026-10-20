@@ -1,0 +1,15 @@
+# Entornos virtuales
+venv/
+.venv/
+
+# Caché de Python, Pytest y Ruff
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+
+# Configuración de IDEs y SO
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
