@@ -1,4 +1,6 @@
 from fastapi import FastAPI
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from app.logger import JSONLogMiddleware
 from app.routers import incidents, projects, tasks
 
@@ -11,20 +13,18 @@ app = FastAPI(
 # Registrar Middleware de Logging JSON
 app.add_middleware(JSONLogMiddleware)
 
-# Registrar Routers
+# Montar carpeta de archivos estáticos
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
+
+# Registrar Routers de la API
 app.include_router(projects.router)
 app.include_router(tasks.router)
 app.include_router(incidents.router)
 
 
-@app.get("/", tags=["General"])
-def read_root():
-    return {
-        "app": "DevFlow API",
-        "version": "1.0.0",
-        "status": "running",
-        "docs": "/docs",
-    }
+@app.get("/", tags=["UI"])
+def read_dashboard():
+    return FileResponse("app/static/index.html")
 
 
 @app.get("/health", tags=["General"])

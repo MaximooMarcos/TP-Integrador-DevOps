@@ -8,7 +8,7 @@ client = TestClient(app)
 def test_read_root():
     response = client.get("/")
     assert response.status_code == 200
-    assert response.json()["app"] == "DevFlow API"
+    assert "DevFlow" in response.text
 
 
 def test_health_check():
