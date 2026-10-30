@@ -1,12 +1,17 @@
+# ruff: noqa: E402
 import json
 import logging
 import time
+import newrelic.agent
+
+newrelic.agent.initialize()
+
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse, FileResponse
+from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from prometheus_fastapi_instrumentator import Instrumentator
-from app.routers import projects, tasks, incidents
+from app.routers import incidents, projects, tasks
 
 # Configuración del Logger estructurado en JSON para Observabilidad
 logger = logging.getLogger("devflow-logger")
@@ -14,7 +19,8 @@ logger.setLevel(logging.INFO)
 handler = logging.StreamHandler()
 
 
-class JSONFormatter(logging.Formatter if "logging" in globals() else logging.Formatter):  # estándar
+class JSONFormatter(logging.Formatter):
+
     def format(self, record):
         log_data = {
             "timestamp": self.formatTime(record, "%Y-%m-%dT%H:%M:%SZ"),
