@@ -31,7 +31,7 @@ jobs:
         run: ruff check .
 
       - name: Run Unit Tests (Pytest)
-        run: pytest
+        run: python -m pytest 
 
   # -------------------------------------------------------------
   # ETAPA 2: ENTREGA CONTINUA (CD - Build & Push Docker)
