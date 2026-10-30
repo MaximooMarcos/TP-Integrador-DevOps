@@ -14,7 +14,7 @@ logger.setLevel(logging.INFO)
 handler = logging.StreamHandler()
 
 
-class JSONFormatter(loggin.Formatter if "logging" in globals() else logging.Formatter):  # estándar
+class JSONFormatter(logging.Formatter if "logging" in globals() else logging.Formatter):  # estándar
     def format(self, record):
         log_data = {
             "timestamp": self.formatTime(record, "%Y-%m-%dT%H:%M:%SZ"),
