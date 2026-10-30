@@ -51,7 +51,7 @@ app.add_middleware(
 )
 
 
-# Middleware para Logs Estructurados en JSON (Middleware de Observabilidad)
+# Middleware para los Logs Estructurados en JSON (Middleware de Observabilidad)
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
     start_time = time.time()
@@ -95,3 +95,7 @@ def health_check():
 @app.get("/", response_class=HTMLResponse, include_in_schema=False)
 def read_root():
     return FileResponse("app/static/index.html")
+
+@app.get("/ping") 
+def ping(): 
+    return {"status": "ok", "message": "pong", "test": "Prueba de pipeline 2"}
