@@ -7,7 +7,7 @@ from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from app.routers import projects, tasks, incidents
 
-# Configuración del Logger estructurado en JSON
+# Configuración del Logger estructurado en JSON para Observabilidad
 logger = logging.getLogger("devflow-logger")
 logger.setLevel(logging.INFO)
 handler = logging.StreamHandler()
