@@ -63,3 +63,16 @@ jobs:
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/devflow:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/devflow:${{ env.VERSION_TAG }}
+
+  # -------------------------------------------------------------
+  # ETAPA 3: DESPLIEGUE CONTINUO (CD - Deploy to Render)
+  # -------------------------------------------------------------
+  deploy:
+    name: Deploy to Render
+    needs: build-and-push # Solo se ejecuta si la etapa de Docker pasa en verde
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Render Deploy Hook
+        run: |
+          curl -s -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}&imgURL=docker.io/${{ secrets.DOCKERHUB_USERNAME }}/devflow:${{ env.VERSION_TAG }}"
