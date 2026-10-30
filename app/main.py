@@ -5,6 +5,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
+from prometheus_fastapi_instrumentator import Instrumentator
 from app.routers import projects, tasks, incidents
 
 # Configuración del Logger estructurado en JSON para Observabilidad
@@ -13,8 +14,7 @@ logger.setLevel(logging.INFO)
 handler = logging.StreamHandler()
 
 
-class JSONFormatter(logging.Formatter):
-
+class JSONFormatter(loggin.Formatter if "logging" in globals() else logging.Formatter):  # estándar
     def format(self, record):
         log_data = {
             "timestamp": self.formatTime(record, "%Y-%m-%dT%H:%M:%SZ"),
@@ -76,6 +76,9 @@ app.mount("/static", StaticFiles(directory="app/static"), name="static")
 app.include_router(projects.router)
 app.include_router(tasks.router)
 app.include_router(incidents.router)
+
+# Instrumentación de Prometheus (expone automáticamente el endpoint /metrics)
+Instrumentator().instrument(app).expose(app)
 
 
 @app.get("/health", tags=["Health Check"])
