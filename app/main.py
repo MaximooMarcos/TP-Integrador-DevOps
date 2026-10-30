@@ -13,7 +13,7 @@ from fastapi.staticfiles import StaticFiles
 from prometheus_fastapi_instrumentator import Instrumentator
 from app.routers import incidents, projects, tasks
 
-# Configuración del Logger estructurado en JSON para Observabilidad
+# Configuración del Logger estructurado en JSON
 logger = logging.getLogger("devflow-logger")
 logger.setLevel(logging.INFO)
 handler = logging.StreamHandler()
