@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [ main ]
 
+env:
+  # Define la versión semántica dinámica basada en el número de corrida de GitHub Actions
+  VERSION_TAG: v1.0.${{ github.run_number }}
+
 jobs:
   # -------------------------------------------------------------
   # ETAPA 1: INTEGRACIÓN CONTINUA (CI)
@@ -31,7 +35,7 @@ jobs:
         run: ruff check .
 
       - name: Run Unit Tests (Pytest)
-        run: python -m pytest 
+        run: python -m pytest
 
   # -------------------------------------------------------------
   # ETAPA 2: ENTREGA CONTINUA (CD - Build & Push Docker)
@@ -58,17 +62,4 @@ jobs:
           push: true
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/devflow:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/devflow:v1.0.0
-
-  # -------------------------------------------------------------
-  # ETAPA 3: DESPLIEGUE CONTINUO (CD - Deploy to Render)
-  # -------------------------------------------------------------
-  deploy:
-    name: Deploy to Render
-    needs: build-and-push # Solo se ejecuta si la etapa de Docker pasa en verde
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Trigger Render Deploy Hook
-        run: |
-          curl -s -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"
+            ${{ secrets.DOCKERHUB_USERNAME }}/devflow:${{ env.VERSION_TAG }}
