@@ -1,3 +1,5 @@
+import newrelic.agent 
+newrelic.agent.initialize()
 import json
 import logging
 import time
